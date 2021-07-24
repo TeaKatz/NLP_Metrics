@@ -2,6 +2,10 @@ import numpy as np
 
 
 def cal_multilabel_accuracy(targets, outputs, average="samples", **kwargs):
+    """
+    targets: (batch_size, vector_size)
+    outputs: (batch_size, vector_size)
+    """
     assert average in ["samples", "macro", "micro"], "average much be either 'samples', 'macro', 'micro'"
 
     if average == "samples":
@@ -20,6 +24,10 @@ def cal_multilabel_accuracy(targets, outputs, average="samples", **kwargs):
 
 
 def cal_multilabel_precision(targets, outputs, average="samples", **kwargs):
+    """
+    targets: (batch_size, vector_size)
+    outputs: (batch_size, vector_size)
+    """
     assert average in ["samples", "macro", "micro"], "average much be either 'samples', 'macro', 'micro'"
 
     if average == "samples":
@@ -38,6 +46,10 @@ def cal_multilabel_precision(targets, outputs, average="samples", **kwargs):
 
 
 def cal_multilabel_recall(targets, outputs, average="samples", **kwargs):
+    """
+    targets: (batch_size, vector_size)
+    outputs: (batch_size, vector_size)
+    """
     assert average in ["samples", "macro", "micro"], "average much be either 'samples', 'macro', 'micro'"
 
     if average == "samples":
@@ -56,6 +68,10 @@ def cal_multilabel_recall(targets, outputs, average="samples", **kwargs):
 
 
 def cal_multilabel_f1(targets, outputs, average="samples", **kwargs):
+    """
+    targets: (batch_size, vector_size)
+    outputs: (batch_size, vector_size)
+    """
     precision = cal_multilabel_precision(targets, outputs, average=average)
     recall = cal_multilabel_recall(targets, outputs, average=average)
     return 2 * ((precision * recall) / (precision + recall + 1e-7))
