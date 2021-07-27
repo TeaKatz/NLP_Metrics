@@ -40,7 +40,7 @@ def cal_cosine_similarity(targets, outputs, **kwargs):
     target: (batch_size, vector_size)
     outputs: (batch_size, vector_size)
     """
-    return cosine_similarity(targets, outputs)
+    return cosine_similarity(targets, outputs).diagonal().mean()
 
 
 def cal_accuracy(targets, outputs, **kwargs):
