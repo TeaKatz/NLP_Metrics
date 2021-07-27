@@ -10,7 +10,7 @@ from sklearn.metrics.pairwise import cosine_similarity
 from .multilabel_metrics import cal_multilabel_accuracy, cal_multilabel_precision, cal_multilabel_recall, cal_multilabel_f1
 
 
-def cal_cer(targets, outputs, **kwargs):
+def cal_cer(outputs, targets, **kwargs):
     """
     targets: List(String)
     outputs: List(String)
@@ -18,7 +18,7 @@ def cal_cer(targets, outputs, **kwargs):
     return fastwer.score(targets, outputs, char_level=True)
 
 
-def cal_wer(targets, outputs, **kwargs):
+def cal_wer(outputs, targets, **kwargs):
     """
     targets: List(String)
     outputs: List(String)
@@ -26,7 +26,7 @@ def cal_wer(targets, outputs, **kwargs):
     return fastwer.score(targets, outputs)
 
 
-def cal_bleu(targets, outputs, **lwargs):
+def cal_bleu(outputs, targets, **lwargs):
     """
     targets: List(List(String))
     outputs: List(List(String))
@@ -35,7 +35,7 @@ def cal_bleu(targets, outputs, **lwargs):
     return bleu_score
 
 
-def cal_cosine_similarity(targets, outputs, **kwargs):
+def cal_cosine_similarity(outputs, targets, **kwargs):
     """
     target: (batch_size, vector_size)
     outputs: (batch_size, vector_size)
@@ -43,7 +43,7 @@ def cal_cosine_similarity(targets, outputs, **kwargs):
     return cosine_similarity(targets, outputs).diagonal().mean()
 
 
-def cal_accuracy(targets, outputs, **kwargs):
+def cal_accuracy(outputs, targets, **kwargs):
     """
     targets: (batch_size, vector_size)
     outputs: (batch_size, vector_size)
@@ -51,7 +51,7 @@ def cal_accuracy(targets, outputs, **kwargs):
     return accuracy_score(targets, outputs)
 
 
-def cal_precision(targets, outputs, labels=None, pos_label=1, average="binary", sample_weight=None, zero_division="warn", **kwargs):
+def cal_precision(outputs, targets, labels=None, pos_label=1, average="binary", sample_weight=None, zero_division="warn", **kwargs):
     """
     targets: (batch_size, vector_size)
     outputs: (batch_size, vector_size)
@@ -59,7 +59,7 @@ def cal_precision(targets, outputs, labels=None, pos_label=1, average="binary", 
     return precision_score(targets, outputs, labels=labels, average=average, zero_division=zero_division)
 
 
-def cal_recall(targets, outputs, labels=None, pos_label=1, average="binary", sample_weight=None, zero_division="warn", **kwargs):
+def cal_recall(outputs, targets, labels=None, pos_label=1, average="binary", sample_weight=None, zero_division="warn", **kwargs):
     """
     targets: (batch_size, vector_size)
     outputs: (batch_size, vector_size)
@@ -67,7 +67,7 @@ def cal_recall(targets, outputs, labels=None, pos_label=1, average="binary", sam
     return recall_score(targets, outputs, labels=labels, average=average)
 
 
-def cal_f1(targets, outputs, labels=None, pos_label=1, average="binary", sample_weight=None, zero_division="warn", **kwargs):
+def cal_f1(outputs, targets, labels=None, pos_label=1, average="binary", sample_weight=None, zero_division="warn", **kwargs):
     """
     targets: (batch_size, vector_size)
     outputs: (batch_size, vector_size)
@@ -75,7 +75,7 @@ def cal_f1(targets, outputs, labels=None, pos_label=1, average="binary", sample_
     return f1_score(targets, outputs, labels=labels, average=average)
 
 
-def cal_mae(targets, outputs):
+def cal_mae(outputs, targets):
     """
     targets: (batch_size, vector_size)
     outputs: (batch_size, vector_size)
@@ -83,7 +83,7 @@ def cal_mae(targets, outputs):
     return np.mean(np.abs(targets - outputs))
 
 
-def cal_mse(targets, outputs):
+def cal_mse(outputs, targets):
     """
     targets: (batch_size, vector_size)
     outputs: (batch_size, vector_size)
@@ -116,4 +116,4 @@ class Metrics:
         self.metrics_arguments = metrics_arguments
 
     def __call__(self, outputs, targets):
-        return {name: metric(targets, outputs, **self.metrics_arguments) for name, metric in self.metrics.items()}
+        return {name: metric_func(outputs, targets, **self.metrics_arguments) for name, metric_func in self.metrics.items()}
