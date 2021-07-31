@@ -115,5 +115,5 @@ class Metrics:
                        {name: self.name2metric[metric] for name, metric in zip(names, metrics)}
         self.metrics_arguments = metrics_arguments
 
-    def __call__(self, outputs, targets):
+    def __call__(self, outputs, targets=None):
         return {name: metric_func(outputs, targets, **self.metrics_arguments) for name, metric_func in self.metrics.items()}
