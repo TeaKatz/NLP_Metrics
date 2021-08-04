@@ -7,6 +7,7 @@ from sklearn.metrics import precision_score
 from sklearn.metrics import recall_score
 from sklearn.metrics import f1_score
 from sklearn.metrics.pairwise import cosine_similarity
+from scipy.stats import spearmanr
 from .multilabel_metrics import cal_multilabel_accuracy, cal_multilabel_precision, cal_multilabel_recall, cal_multilabel_f1
 
 
@@ -91,6 +92,16 @@ def cal_mse(outputs, targets):
     return np.mean(np.square(targets - outputs))
 
 
+def cal_spearman(outputs, targets):
+    """
+    targets: (batch_size, vector_size)
+    outputs: (batch_size, vector_size)
+    """
+    correlation, _ = spearmanr(outputs, targets, axis=1)
+    correlation = correlation[:100, 100:].diagonal()
+    return np.mean(correlation)
+
+
 class Metrics:
     name2metric = {
         "CER": cal_cer,
@@ -106,7 +117,8 @@ class Metrics:
         "MultiLabel_Recall": cal_multilabel_recall,
         "MultiLabel_F1": cal_multilabel_f1,
         "MAE": cal_mae,
-        "MSE": cal_mse
+        "MSE": cal_mse,
+        "Spearman": cal_spearman
     }
     def __init__(self, metrics, names=None , **metrics_arguments):
         if not isinstance(metrics, list):
