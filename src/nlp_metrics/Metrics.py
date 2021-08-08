@@ -11,93 +11,93 @@ from scipy.stats import spearmanr
 from .multilabel_metrics import cal_multilabel_accuracy, cal_multilabel_precision, cal_multilabel_recall, cal_multilabel_f1
 
 
-def cal_cer(outputs, targets, **kwargs):
+def cal_cer(inputs, targets, **kwargs):
     """
     targets: List(String)
-    outputs: List(String)
+    inputs: List(String)
     """
-    return fastwer.score(targets, outputs, char_level=True)
+    return fastwer.score(targets, inputs, char_level=True)
 
 
-def cal_wer(outputs, targets, **kwargs):
+def cal_wer(inputs, targets, **kwargs):
     """
     targets: List(String)
-    outputs: List(String)
+    inputs: List(String)
     """
-    return fastwer.score(targets, outputs)
+    return fastwer.score(targets, inputs)
 
 
-def cal_bleu(outputs, targets, **lwargs):
+def cal_bleu(inputs, targets, **kwargs):
     """
     targets: List(List(String))
-    outputs: List(List(String))
+    inputs: List(List(String))
     """
-    bleu_score = np.mean([sentence_bleu([tar_tokens], out_tokens) for tar_tokens, out_tokens in zip(targets, outputs)])
+    bleu_score = np.mean([sentence_bleu([tar_tokens], out_tokens) for tar_tokens, out_tokens in zip(targets, inputs)])
     return bleu_score
 
 
-def cal_cosine_similarity(outputs, targets, **kwargs):
+def cal_cosine_similarity(inputs, targets, **kwargs):
     """
     target: (batch_size, vector_size)
-    outputs: (batch_size, vector_size)
+    inputs: (batch_size, vector_size)
     """
-    return cosine_similarity(targets, outputs).diagonal().mean()
+    return cosine_similarity(targets, inputs).diagonal().mean()
 
 
-def cal_accuracy(outputs, targets, **kwargs):
+def cal_accuracy(inputs, targets, **kwargs):
     """
     targets: (batch_size, vector_size)
-    outputs: (batch_size, vector_size)
+    inputs: (batch_size, vector_size)
     """
-    return accuracy_score(targets, outputs)
+    return accuracy_score(targets, inputs)
 
 
-def cal_precision(outputs, targets, labels=None, pos_label=1, average="binary", sample_weight=None, zero_division="warn", **kwargs):
+def cal_precision(inputs, targets, labels=None, pos_label=1, average="binary", sample_weight=None, zero_division="warn", **kwargs):
     """
     targets: (batch_size, vector_size)
-    outputs: (batch_size, vector_size)
+    inputs: (batch_size, vector_size)
     """
-    return precision_score(targets, outputs, labels=labels, average=average, zero_division=zero_division)
+    return precision_score(targets, inputs, labels=labels, average=average, zero_division=zero_division)
 
 
-def cal_recall(outputs, targets, labels=None, pos_label=1, average="binary", sample_weight=None, zero_division="warn", **kwargs):
+def cal_recall(inputs, targets, labels=None, pos_label=1, average="binary", sample_weight=None, zero_division="warn", **kwargs):
     """
     targets: (batch_size, vector_size)
-    outputs: (batch_size, vector_size)
+    inputs: (batch_size, vector_size)
     """
-    return recall_score(targets, outputs, labels=labels, average=average)
+    return recall_score(targets, inputs, labels=labels, average=average)
 
 
-def cal_f1(outputs, targets, labels=None, pos_label=1, average="binary", sample_weight=None, zero_division="warn", **kwargs):
+def cal_f1(inputs, targets, labels=None, pos_label=1, average="binary", sample_weight=None, zero_division="warn", **kwargs):
     """
     targets: (batch_size, vector_size)
-    outputs: (batch_size, vector_size)
+    inputs: (batch_size, vector_size)
     """
-    return f1_score(targets, outputs, labels=labels, average=average)
+    return f1_score(targets, inputs, labels=labels, average=average)
 
 
-def cal_mae(outputs, targets):
+def cal_mae(inputs, targets, **kwargs):
     """
     targets: (batch_size, vector_size)
-    outputs: (batch_size, vector_size)
+    inputs: (batch_size, vector_size)
     """
-    return np.mean(np.abs(targets - outputs))
+    return np.mean(np.abs(targets - inputs))
 
 
-def cal_mse(outputs, targets):
+def cal_mse(inputs, targets, **kwargs):
     """
     targets: (batch_size, vector_size)
-    outputs: (batch_size, vector_size)
+    inputs: (batch_size, vector_size)
     """
-    return np.mean(np.square(targets - outputs))
+    return np.mean(np.square(targets - inputs))
 
 
-def cal_spearman(outputs, targets):
+def cal_spearman(inputs, targets, **kwargs):
     """
     targets: (batch_size, vector_size)
-    outputs: (batch_size, vector_size)
+    inputs: (batch_size, vector_size)
     """
-    correlation, _ = spearmanr(outputs, targets, axis=1)
+    correlation, _ = spearmanr(inputs, targets, axis=1)
     correlation = correlation[:100, 100:].diagonal()
     return np.mean(correlation)
 
@@ -127,5 +127,5 @@ class Metrics:
                        {name: self.name2metric[metric] for name, metric in zip(names, metrics)}
         self.metrics_arguments = metrics_arguments
 
-    def __call__(self, outputs, targets=None):
-        return {name: metric_func(outputs, targets, **self.metrics_arguments) for name, metric_func in self.metrics.items()}
+    def __call__(self, *args):
+        return {name: metric_func(*args, **self.metrics_arguments) for name, metric_func in self.metrics.items()}
