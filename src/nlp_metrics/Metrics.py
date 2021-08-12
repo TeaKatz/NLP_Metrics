@@ -97,8 +97,12 @@ def cal_spearman(inputs, targets, **kwargs):
     targets: (batch_size, vector_size)
     inputs: (batch_size, vector_size)
     """
+    assert inputs.shape[0] == targets.shape[0]
+    batch_size = inputs.shape[0]
+
     correlation, _ = spearmanr(inputs, targets, axis=1)
-    correlation = correlation[:100, 100:].diagonal()
+    if batch_size > 1:
+        correlation = correlation[:batch_size, batch_size:].diagonal()
     return np.mean(correlation)
 
 
