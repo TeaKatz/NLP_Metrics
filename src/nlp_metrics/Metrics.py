@@ -1,7 +1,7 @@
 import fastwer
 import numpy as np
 
-from nltk.translate.bleu_score import sentence_bleu
+from nltk.translate.bleu_score import corpus_bleu
 from sklearn.metrics import accuracy_score
 from sklearn.metrics import precision_score
 from sklearn.metrics import recall_score
@@ -32,7 +32,7 @@ def cal_bleu(inputs, targets, **kwargs):
     targets: List(List(String))
     inputs: List(List(String))
     """
-    bleu_score = np.mean([sentence_bleu([tar_tokens], out_tokens) for tar_tokens, out_tokens in zip(targets, inputs)])
+    bleu_score = corpus_bleu([targets], inputs)
     return bleu_score
 
 
