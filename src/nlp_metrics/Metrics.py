@@ -8,6 +8,7 @@ from sklearn.metrics import recall_score
 from sklearn.metrics import f1_score
 from sklearn.metrics.pairwise import cosine_similarity
 from scipy.stats import spearmanr
+from scipy.stats import pearsonr
 from .multilabel_metrics import cal_multilabel_accuracy, cal_multilabel_precision, cal_multilabel_recall, cal_multilabel_f1
 
 
@@ -92,18 +93,26 @@ def cal_mse(inputs, targets, **kwargs):
     return np.mean(np.square(targets - inputs))
 
 
-def cal_spearman(inputs, targets, **kwargs):
+def cal_spearman_correlation(inputs, targets, **kwargs):
     """
-    targets: (batch_size, vector_size)
-    inputs: (batch_size, vector_size)
+    targets: (batch_size, )
+    inputs: (batch_size, )
     """
-    assert inputs.shape[0] == targets.shape[0]
-    batch_size = inputs.shape[0]
+    assert len(inputs) == len(targets)
 
-    correlation, _ = spearmanr(inputs, targets, axis=1)
-    if batch_size > 1:
-        correlation = correlation[:batch_size, batch_size:].diagonal()
-    return np.mean(correlation)
+    correlation, _ = spearmanr(inputs, targets)
+    return correlation
+
+
+def cal_pearson_correlation(inputs, targets, **kwargs):
+    """
+    targets: (batch_size, )
+    inputs: (batch_size, )
+    """
+    assert len(inputs) == len(targets)
+
+    correlation, _ = pearsonr(inputs, targets)
+    return correlation
 
 
 class Metrics:
@@ -122,7 +131,8 @@ class Metrics:
         "MultiLabel_F1": cal_multilabel_f1,
         "MAE": cal_mae,
         "MSE": cal_mse,
-        "Spearman": cal_spearman
+        "Spearman_Correlation": cal_spearman_correlation,
+        "Pearson_Correlation": cal_pearson_correlation
     }
     def __init__(self, metrics, names=None , **metrics_arguments):
         if not isinstance(metrics, list):
