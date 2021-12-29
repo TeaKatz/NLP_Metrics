@@ -3,7 +3,7 @@ from ..Metrics import Metrics
 
 class STSBMetric:
     def __init__(self):
-        self.metrics = Metrics(["Spearman_Correlation"])
+        self.metrics = Metrics(["Spearman_Correlation", "MAE"])
 
     def __call__(self, preds, targs):
         """
