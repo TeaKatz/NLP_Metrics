@@ -12,5 +12,5 @@ class QNLIMetric:
         targs: (batch_size, )
         """
         # (batch_size, )
-        preds = np.argmax(preds)
+        preds = np.argmax(preds, axis=-1)
         return self.metrics(preds, targs)
