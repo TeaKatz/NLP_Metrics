@@ -4,7 +4,7 @@ from ..Metrics import Metrics
 
 class QQPMetric:
     def __init__(self):
-        self.metrics = Metrics(["Accuracy", "F1", "Precision", "Recall"])
+        self.metrics = Metrics(["Accuracy", "F1", "Precision", "Recall"], average="macro")
 
     def __call__(self, preds, targs):
         """
